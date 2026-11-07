@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Birthday Surprise</title>
+<style>
+:root{--gold:#d8b56d;--gold2:#f5dfaa;--ink:#090909;--panel:#15130f;--muted:#b9ad96}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% 0%,#302515 0,#100e0a 42%,#070707 100%);color:#f8f0df;font-family:Georgia,'Times New Roman',serif;min-height:100vh}
+button,input,textarea{font:inherit} button{cursor:pointer}
+.hidden{display:none!important}.gold{color:var(--gold2)}.wrap{max-width:1050px;margin:auto;padding:24px}
+.topline{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px 0 28px}
+.center{text-align:center}.eyebrow{letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font:11px Arial,sans-serif}
+h1{font-size:clamp(38px,8vw,76px);font-weight:400;letter-spacing:.06em;margin:14px 0;color:var(--gold2);text-shadow:0 0 28px #b58a3a55}
+h2{font-weight:400;color:var(--gold2)} p{line-height:1.75;color:#e0d6c3}
+.btn{border:1px solid var(--gold);background:linear-gradient(135deg,#3b2c14,#17120a);color:var(--gold2);padding:12px 20px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase;font:12px Arial,sans-serif}
+.btn:hover{background:#493719}.outline{background:transparent}
+.card{background:linear-gradient(145deg,#1a1711,#0e0d0b);border:1px solid #8f713b77;padding:26px;border-radius:8px;box-shadow:0 16px 45px #0008}
+.gate{min-height:100vh;display:grid;place-items:center;padding:20px}.gatebox{width:min(440px,100%);text-align:center}
+input,textarea{width:100%;background:#090909;border:1px solid #806536;color:#f8f0df;padding:12px;margin:7px 0;border-radius:3px}
+textarea{min-height:110px;resize:vertical}.hint{font:12px Arial,sans-serif;color:var(--muted)}
+.hero{padding:55px 0 35px}.subtitle{color:#d3c4a5;font-style:italic;font-size:20px}
+.section{margin:32px 0}.section-title{text-align:center;letter-spacing:.22em;text-transform:uppercase;font:12px Arial,sans-serif;color:var(--gold);margin-bottom:18px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.photo{min-height:220px;border:1px solid #9a7944;background:#1b1710;display:grid;place-items:center;overflow:hidden;position:relative}
+.photo img{width:100%;height:260px;object-fit:cover;display:block}.photo span{color:#b9a77e;font:12px Arial,sans-serif;padding:18px;text-align:center}
+.letter{max-width:760px;margin:auto;text-align:center}.letter p{font-size:18px}
+.comments{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.comment{border-left:2px solid var(--gold);background:#17140f;padding:17px;color:#e9dcc2;font-style:italic}
+.footer{text-align:center;color:#a9956e;font-size:13px;padding:35px 0}
+.admin-toggle{position:fixed;right:16px;bottom:16px;z-index:5}
+.modal{position:fixed;inset:0;background:#000d;z-index:10;overflow:auto;padding:20px;display:grid;place-items:start center}
+.admin{width:min(760px,100%);margin:20px auto}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;color:var(--gold2);font:12px Arial,sans-serif;letter-spacing:.05em;margin-top:10px}
+.admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#2a2112;border:1px solid var(--gold);padding:10px 16px;z-index:20;color:var(--gold2);display:none}
+@media(max-width:600px){.wrap{padding:17px}.admin-grid{grid-template-columns:1fr}.hero{padding-top:35px}}
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <div class="card gatebox">
+    <div class="eyebrow">A little surprise awaits</div>
+    <div class="topline"></div>
+    <div style="font-size:34px;color:#d8b56d">✦</div>
+    <h1 style="font-size:38px">For You</h1>
+    <p>Some moments are too special not to celebrate.</p>
+    <label for="guestPassword">Enter your secret password</label>
+    <input id="guestPassword" type="password" placeholder="Your password" autocomplete="off">
+    <button class="btn" style="width:100%;margin-top:8px" onclick="unlock()">Open your surprise</button>
+    <p class="hint">The password can be changed in Admin Mode.</p>
+  </div>
+</div>
+
+<main id="site" class="hidden">
+  <div class="wrap">
+    <header class="hero center">
+      <div class="eyebrow" id="topEyebrow">A celebration made just for you</div>
+      <h1 id="personName">Happy Birthday, Beautiful</h1>
+      <div class="subtitle" id="tagline">Today, the spotlight belongs to you.</div>
+      <div class="topline"></div>
+      <button class="btn" onclick="document.getElementById('letterSection').scrollIntoView({behavior:'smooth'})">Read your birthday letter</button>
+    </header>
+    <section class="section">
+      <div class="section-title">A collection of lovely memories</div>
+      <div class="gallery" id="gallery">
+        <div class="photo"><span>Your photo 1 will appear here<br>Upload photos in Admin Mode</span></div>
+        <div class="photo"><span>Your photo 2 will appear here<br>Upload photos in Admin Mode</span></div>
+        <div class="photo"><span>Your photo 3 will appear here<br>Upload photos in Admin Mode</span></div>
+      </div>
+    </section>
+    <section class="section card letter" id="letterSection">
+      <div class="eyebrow">A few words from the heart</div>
+      <h2 id="letterHeading">Dear Beautiful,</h2>
+      <p id="letterText">Wishing you a birthday filled with genuine smiles, beautiful surprises and memories that stay with you forever. May this new year of your life bring you closer to everything that makes your heart happy. Keep shining, keep smiling, and never forget how special you are.</p>
+      <div class="gold" style="font-size:25px;margin-top:20px">With lots of love ♡</div>
+    </section>
+    <section class="section">
+      <div class="section-title">A few sweet reminders</div>
+      <div class="comments" id="comments">
+        <div class="comment">Your smile could brighten the dullest day. ♡</div>
+        <div class="comment">You make ordinary moments feel special.</div>
+        <div class="comment">Stay kind, stay lovely, and keep being you.</div>
+      </div>
+    </section>
+    <section class="section center card">
+      <div class="eyebrow">One more little surprise</div>
+      <h2>Make a wish ✦</h2>
+      <p id="surpriseText">If I could gift you one thing, it would be the chance to see yourself through the eyes of the people who adore you.</p>
+      <button class="btn" onclick="revealSurprise()">Reveal your final surprise</button>
+      <p id="finalReveal" class="gold hidden" style="font-size:20px">You deserve all the beautiful things life has to offer. Happy Birthday! ♡</p>
+    </section>
+    <div class="footer">Made with care, just for you · <span id="footerName">A special person</span></div>
+  </div>
+  <button class="btn admin-toggle" onclick="openAdmin()">⚙ Admin Mode</button>
+</main>
+
+<div id="adminModal" class="modal hidden">
+  <div class="card admin">
+    <div class="eyebrow">Website settings</div>
+    <h2 style="margin-top:8px">Admin Mode</h2>
+    <p class="hint">Edit the page below. Changes are saved in this browser on this device.</p>
+    <div class="admin-grid">
+      <div><label>Her name / heading</label><input id="editName" placeholder="Happy Birthday, ..."></div>
+      <div><label>Small subtitle</label><input id="editTagline"></div>
+    </div>
+    <label>Birthday letter heading</label><input id="editLetterHeading">
+    <label>Birthday letter</label><textarea id="editLetter"></textarea>
+    <label>Sweet comments (one per line)</label><textarea id="editComments"></textarea>
+    <label>Final surprise message</label><textarea id="editSurprise"></textarea>
+    <div class="admin-grid">
+      <div><label>Guest password</label><input id="editGuestPassword" type="text"></div>
+      <div><label>Admin PIN</label><input id="editAdminPin" type="text"></div>
+    </div>
+    <label>Upload photos (select multiple)</label><input id="photoFiles" type="file" accept="image/*" multiple>
+    <label>Birthday music (optional MP3 file)</label><input id="musicFile" type="file" accept="audio/*">
+    <div class="admin-actions">
+      <button class="btn" onclick="saveSettings()">Save changes</button>
+      <button class="btn outline" onclick="document.getElementById('adminModal').classList.add('hidden')">Close</button>
+      <button class="btn outline" onclick="downloadBackup()">Download settings backup</button>
+      <button class="btn outline" onclick="resetSettings()">Reset template</button>
+    </div>
+    <p class="hint">Tip: choose a small MP3 and a few compressed photos so the page stays easy to manage.</p>
+  </div>
+</div>
+<audio id="birthdayAudio" loop></audio>
+<div id="toast"></div>
+
+<script>
+const DEFAULTS = {
+  name:"Happy Birthday, Beautiful",
+  tagline:"Today, the spotlight belongs to you.",
+  letterHeading:"Dear Beautiful,",
+  letter:"Wishing you a birthday filled with genuine smiles, beautiful surprises and memories that stay with you forever. May this new year of your life bring you closer to everything that makes your heart happy. Keep shining, keep smiling, and never forget how special you are.",
+  comments:["Your smile could brighten the dullest day. ♡","You make ordinary moments feel special.","Stay kind, stay lovely, and keep being you."],
+  surprise:"If I could gift you one thing, it would be the chance to see yourself through the eyes of the people who adore you.",
+  guestPassword:"birthday2026",
+  adminPin:"admin1234",
+  photos:[],
+  music:""
+};
+let data = loadData();
+function loadData(){try{return {...DEFAULTS,...JSON.parse(localStorage.getItem("birthdaySiteData")||"{}")}}catch(e){return {...DEFAULTS}}}
+function persist(){try{localStorage.setItem("birthdaySiteData",JSON.stringify(data));return true}catch(e){notify("Storage is full. Use fewer/smaller photos.");return false}}
+function notify(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
+function unlock(){
+  if(document.getElementById("guestPassword").value===data.guestPassword){
+    document.getElementById("gate").classList.add("hidden");document.getElementById("site").classList.remove("hidden");render();
+    if(data.music){const a=document.getElementById("birthdayAudio");a.src=data.music;a.play().catch(()=>{});}
+  }else notify("That password doesn't match. Try again.");
+}
+document.getElementById("guestPassword").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+function render(){
+  document.getElementById("personName").textContent=data.name;
+  document.getElementById("footerName").textContent=data.name.replace(/^Happy Birthday,?\s*/i,"")||"A special person";
+  document.getElementById("tagline").textContent=data.tagline;
+  document.getElementById("letterHeading").textContent=data.letterHeading;
+  document.getElementById("letterText").textContent=data.letter;
+  document.getElementById("surpriseText").textContent=data.surprise;
+  const g=document.getElementById("gallery");g.innerHTML="";
+  if(data.photos.length){data.photos.forEach(src=>{const d=document.createElement("div");d.className="photo";const im=document.createElement("img");im.src=src;im.alt="Birthday memory";d.appendChild(im);g.appendChild(d)})}
+  else {for(let i=1;i<=3;i++){const d=document.createElement("div");d.className="photo";d.innerHTML=`<span>Your photo ${i} will appear here<br>Upload photos in Admin Mode</span>`;g.appendChild(d)}}
+  const c=document.getElementById("comments");c.innerHTML="";data.comments.forEach(s=>{const d=document.createElement("div");d.className="comment";d.textContent=s;c.appendChild(d)});
+}
+function openAdmin(){
+  const pin=prompt("Enter Admin PIN:");
+  if(pin!==data.adminPin){notify("Incorrect Admin PIN.");return}
+  document.getElementById("editName").value=data.name;
+  document.getElementById("editTagline").value=data.tagline;
+  document.getElementById("editLetterHeading").value=data.letterHeading;
+  document.getElementById("editLetter").value=data.letter;
+  document.getElementById("editComments").value=data.comments.join("\n");
+  document.getElementById("editSurprise").value=data.surprise;
+  document.getElementById("editGuestPassword").value=data.guestPassword;
+  document.getElementById("editAdminPin").value=data.adminPin;
+  document.getElementById("adminModal").classList.remove("hidden");
+}
+async function saveSettings(){
+  data.name=document.getElementById("editName").value.trim()||DEFAULTS.name;
+  data.tagline=document.getElementById("editTagline").value.trim();
+  data.letterHeading=document.getElementById("editLetterHeading").value.trim();
+  data.letter=document.getElementById("editLetter").value;
+  data.comments=document.getElementById("editComments").value.split("\n").map(x=>x.trim()).filter(Boolean);
+  data.surprise=document.getElementById("editSurprise").value;
+  data.guestPassword=document.getElementById("editGuestPassword").value||DEFAULTS.guestPassword;
+  data.adminPin=document.getElementById("editAdminPin").value||DEFAULTS.adminPin;
+  const files=[...document.getElementById("photoFiles").files];
+  if(files.length){
+    const converted=await Promise.all(files.map(file=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})));
+    data.photos=converted;
+  }
+  const mf=document.getElementById("musicFile").files[0];
+  if(mf){data.music=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(mf)})}
+  if(persist()){render();document.getElementById("adminModal").classList.add("hidden");notify("Your changes have been saved on this device.");}
+}
+function revealSurprise(){document.getElementById("finalReveal").classList.toggle("hidden")}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="birthday-settings-backup.json";a.click();URL.revokeObjectURL(a.href);
+}
+function resetSettings(){if(confirm("Reset all custom text, photos and music?")){data={...DEFAULTS,comments:[...DEFAULTS.comments],photos:[]};persist();render();document.getElementById("adminModal").classList.add("hidden");notify("Template reset.");}}
+</script>
+</body>
+</html>
